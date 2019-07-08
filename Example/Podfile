@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'HTNetworkKit_Example' do
+  pod 'HTNetworkKit', :path => '../'
+
+  target 'HTNetworkKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
