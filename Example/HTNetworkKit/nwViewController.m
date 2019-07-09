@@ -7,6 +7,7 @@
 //
 
 #import "nwViewController.h"
+#import "WebService.h"
 
 @interface nwViewController ()
 
@@ -18,6 +19,18 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    // WebService调用方法示例
+    NSDictionary *paramDict = [[NSDictionary alloc] init];
+    // TODO: 添加参数
+    NSString *url = @""; // 可通过[NSString stringWithFormat:@"%@%@",[WebService getWebServiceUrl],BASE_SERVICE_URL] 获取
+    NSString *method = @"";
+    [[WebService shareInstance] get:url params:paramDict method:method success:^(id json, long status) {
+        // 请求成功的处理
+    } failure:^(NSError *error, long status) {
+       // 请求失败的处理
+    }];
+   
 }
 
 - (void)didReceiveMemoryWarning

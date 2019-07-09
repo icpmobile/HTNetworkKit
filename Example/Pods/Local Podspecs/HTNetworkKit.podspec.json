@@ -1,0 +1,33 @@
+{
+  "name": "HTNetworkKit",
+  "version": "0.1.0",
+  "summary": "网络请求封装，WebService+HTTP请求.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/icpmobile/HTNetworkKit",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "JamesLiAndroid": "lisongyang@hoteamsoft.com"
+  },
+  "source": {
+    "git": "https://github.com/icpmobile/HTNetworkKit.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "HTNetworkKit/Classes/**/*",
+  "dependencies": {
+    "HTModelKit": [
+
+    ],
+    "HTToolsKit": [
+
+    ],
+    "AFNetworking": [
+      "~>3.0"
+    ]
+  }
+}

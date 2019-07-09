@@ -1,0 +1,6 @@
+framework module HTToolsKit {
+  umbrella header "HTToolsKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

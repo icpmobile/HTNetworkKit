@@ -1,0 +1,6 @@
+framework module HTModelKit {
+  umbrella header "HTModelKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,10 +1,14 @@
+source 'https://github.com/icpmobile/ICPMSpecs.git'
+source 'https://github.com/CocoaPods/Specs.git'
+
 use_frameworks!
 
-platform :ios, '8.0'
+platform :ios, '9.0'
+
 
 target 'HTNetworkKit_Example' do
-  pod 'HTNetworkKit', :path => '../'
-
+  pod 'HTNetworkKit', :path => '../' 
+  
   target 'HTNetworkKit_Tests' do
     inherit! :search_paths
 

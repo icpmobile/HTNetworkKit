@@ -1,0 +1,6 @@
+framework module HTNetworkKit {
+  umbrella header "HTNetworkKit-umbrella.h"
+
+  export *
+  module * { export * }
+}
