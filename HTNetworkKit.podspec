@@ -31,13 +31,17 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'HTNetworkKit/Classes/**/*'
+  # 关于无法导入HTModelKit文件的问题
+  # 第三方库里面.h文件找不到的问题解决
+  s.user_target_xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
+  
   # libxml2找不到的问题修复
   s.libraries = 'z', 'xml2'
   s.xcconfig = { 'HEADER_SEARCH_PATHS' => '$(SDKROOT)/usr/include/libxml2' }
   
   # ARC项目引入MRC代码的问题修复
   # 需要添加mrc标识的文件
-  non_arc_files = 'HTNetworkKit/Classes/webservice/SoapXmlParseHelper.m', 'HTNetworkKit/Classes/webservice/GDataXMLNode.m'
+  non_arc_files = 'HTNetworkKit/Classes/webservice/SoapXmlParseHelper.{h,m}', 'HTNetworkKit/Classes/webservice/GDataXMLNode.{h,m}'
   # 在工程中首先排除一下
   s.exclude_files = non_arc_files
 

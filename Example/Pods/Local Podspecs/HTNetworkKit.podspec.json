@@ -19,6 +19,9 @@
     "ios": "9.0"
   },
   "source_files": "HTNetworkKit/Classes/**/*",
+  "user_target_xcconfig": {
+    "CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES": "YES"
+  },
   "libraries": [
     "z",
     "xml2"
@@ -27,8 +30,8 @@
     "HEADER_SEARCH_PATHS": "$(SDKROOT)/usr/include/libxml2"
   },
   "exclude_files": [
-    "HTNetworkKit/Classes/webservice/SoapXmlParseHelper.m",
-    "HTNetworkKit/Classes/webservice/GDataXMLNode.m"
+    "HTNetworkKit/Classes/webservice/SoapXmlParseHelper.{h,m}",
+    "HTNetworkKit/Classes/webservice/GDataXMLNode.{h,m}"
   ],
   "dependencies": {
     "HTModelKit": [
@@ -45,8 +48,8 @@
     {
       "name": "no-arc",
       "source_files": [
-        "HTNetworkKit/Classes/webservice/SoapXmlParseHelper.m",
-        "HTNetworkKit/Classes/webservice/GDataXMLNode.m"
+        "HTNetworkKit/Classes/webservice/SoapXmlParseHelper.{h,m}",
+        "HTNetworkKit/Classes/webservice/GDataXMLNode.{h,m}"
       ],
       "requires_arc": false
     }
