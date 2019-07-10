@@ -31,7 +31,22 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'HTNetworkKit/Classes/**/*'
+  # libxml2找不到的问题修复
+  s.libraries = 'z', 'xml2'
+  s.xcconfig = { 'HEADER_SEARCH_PATHS' => '$(SDKROOT)/usr/include/libxml2' }
   
+  # ARC项目引入MRC代码的问题修复
+  # 需要添加mrc标识的文件
+  non_arc_files = 'HTNetworkKit/Classes/webservice/SoapXmlParseHelper.m', 'HTNetworkKit/Classes/webservice/GDataXMLNode.m'
+  # 在工程中首先排除一下
+  s.exclude_files = non_arc_files
+
+  # 子设置，为需要添加mrc标识的文件进行设置
+  s.subspec 'no-arc' do |sp|
+    sp.source_files = non_arc_files
+    sp.requires_arc = false
+  end
+
   # s.resource_bundles = {
   #   'HTNetworkKit' => ['HTNetworkKit/Assets/*.png']
   # }

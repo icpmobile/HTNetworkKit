@@ -20,8 +20,6 @@
 //  说明：静态方法全部改实例方法，去掉无用的参数
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "HTNetWorkConfig.h"
-#import "HTUserInfo.h"
 
 @interface WebService : NSObject
 
