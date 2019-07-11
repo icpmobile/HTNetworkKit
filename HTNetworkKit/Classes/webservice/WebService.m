@@ -58,6 +58,7 @@
     NSString *string = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
     if (![[NormalTools shareInstance] isNetworkEnable]) {
         // MBProgressHUD
+        [self failureNetwork];
 //        [JDStatusBarNotification showWithStatus:@"网络连接不可用！" dismissAfter:3.0 styleName:JDStatusBarStyleError];
         return nil;
     }
@@ -140,6 +141,8 @@
     NSString *string = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
     
     if (![[NormalTools shareInstance] isNetworkEnable]) {
+        // MBProgressHUD
+        [self failureNetwork];
 //        [JDStatusBarNotification showWithStatus:@"网络连接不可用！" dismissAfter:3.0 styleName:JDStatusBarStyleError];
         return nil;
     }
@@ -244,6 +247,30 @@
         }
     }];
     [dataTask resume];
+}
+
+/**
+ * 网络请求失败的提示
+ */
+-(void) failureNetwork {
+    UIView *view = (UIView*)[UIApplication sharedApplication].delegate.window;
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"success"]];
+    //文字
+    hud.label.text = @"网络连接不可用！";
+    //支持多行
+    hud.label.numberOfLines = 0;
+    // 隐藏时候从父控件中移除
+    hud.removeFromSuperViewOnHide = YES;
+    // 纯文本模式
+    hud.mode = MBProgressHUDModeText;
+    
+    hud.contentColor = [UIColor whiteColor];
+    hud.bezelView.backgroundColor = [UIColor blackColor];
+    hud.bezelView.style = MBProgressHUDBackgroundStyleBlur;
+    
+    [hud hideAnimated:YES afterDelay:1];
 }
 
 @end
