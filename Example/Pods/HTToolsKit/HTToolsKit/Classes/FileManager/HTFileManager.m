@@ -7,6 +7,11 @@
 //
 
 #import "HTFileManager.h"
+#import "NormalDatabase.h"
+#import "MPStorageHelper.h"
+#import "HTAppSettings.h"
+#import "HTCommonURL.h"
+
 
 @implementation HTFileManager
 
@@ -168,6 +173,81 @@
         return YES;
     }
 }
+
+/**
+ *删除临时文件
+ */
+- (void)removeTemporaryStore{
+    ///程序退出时删除解密文件夹temp
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *plistPath = [paths firstObject];
+    NSString *localpath = [plistPath stringByAppendingPathComponent:@"temp"];
+    NSFileManager *fileinfo = [NSFileManager defaultManager];
+    [fileinfo removeItemAtPath:localpath error:nil];
+    
+    ///读取本地plist文件，根据ExitCleanCache字段判断是否退出清理缓存
+    NSString *exitCleanCache = [[HTAppSettings sharedManager] getAppSetting:EXIT_CLEAN_CACHE];
+    if ([@"true" isEqualToString:exitCleanCache]){
+        BOOL isOK = [[NormalDatabase shareInstance]openDB];
+        if (isOK) {
+            [[NormalDatabase shareInstance]deleteDatabase];
+            [[NormalDatabase shareInstance]deleteFileDataBase];
+            [[NormalDatabase shareInstance]closeDB];
+        }
+    }
+}
+
+/**
+ *删除所有文件
+ */
+- (void)removeAllStore{
+    ///程序退出时删除解密文件夹temp
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *plistPath = [paths firstObject];
+    NSString *localpath = [plistPath stringByAppendingPathComponent:@"temp"];
+    NSFileManager *fileinfo = [NSFileManager defaultManager];
+    [fileinfo removeItemAtPath:localpath error:nil];
+    BOOL isOK = [[NormalDatabase shareInstance]openDB];
+    if (isOK) {
+        [[NormalDatabase shareInstance]deleteDatabase];
+        [[NormalDatabase shareInstance]deleteFileDataBase];
+        [[NormalDatabase shareInstance]closeDB];
+    }
+    
+    NSString *cachepath = [plistPath stringByAppendingPathComponent:FILE_DOWNLOAD_CACHES];
+    [fileinfo removeItemAtPath:cachepath error:nil];
+}
+
+/**
+ *删除数据 downLoadSize：文件大小
+ */
+- (BOOL)deleteDatabase:(double)downLoadSize{
+    NSArray *array = [[NormalDatabase shareInstance] selectFileData];
+    long freeSpace = [[MPStorageHelper shareInstance] getPhoneFreeStorageSpace];
+    long warnSize = [[[HTAppSettings sharedManager] getAppSetting:CACHE_WARN_SIZE] longLongValue];
+    for (NSDictionary *dic in array) {
+        NSFileManager *fileinfo = [NSFileManager defaultManager];
+        
+        if ([fileinfo fileExistsAtPath:[dic objectForKey:@"filePath"]]) {
+            // 删除指定路径下的文件
+            [fileinfo removeItemAtPath:[dic objectForKey:@"filePath"] error:nil];
+            [[NormalDatabase shareInstance] deleteFileDB:[dic objectForKey:@"fileName"]];
+        }else{
+            [[NormalDatabase shareInstance] deleteFileDB:[dic objectForKey:@"fileName"]];
+        }
+        freeSpace = [[MPStorageHelper shareInstance] getPhoneFreeStorageSpace];
+        //手机内存剩余大小-下载文件大小与手机内存预警值大小比较，大于返回YES，小于继续删除
+        if (freeSpace-downLoadSize > warnSize){
+            return YES;
+        }
+    }
+    if (freeSpace < warnSize){
+        return NO;
+    }else{
+        return YES;
+    }
+}
+
 
 
 @end

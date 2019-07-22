@@ -19,6 +19,7 @@
  ******************************************************************************/
 
 #import "NormalDatabase.h"
+#import "HTCommonURL.h"
 
 @implementation NormalDatabase
 
@@ -42,9 +43,8 @@
 -(BOOL)openDB{
     //1.拼接一个数据库文件路径
     NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    //在documents文件夹下拼接一个数据库文件地址
-    # pragma mark - 由此更改数据库名称
-    NSString *dbPath = [docPath stringByAppendingPathComponent:@"InforMobile.db"];
+    //数据库路径
+    NSString *dbPath = [docPath stringByAppendingPathComponent:DB_NAME];
     
     //参数1:数据库文件存储的路径(UTF8String可以直接将oc语言字符串转成c语言字符串)
     //参数2:数据库dbPoint指针地址

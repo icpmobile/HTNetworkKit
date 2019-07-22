@@ -8,8 +8,15 @@
 
 #import "UploadOperation.h"
 #import "NormalDatabase.h"
-#import "NormalTools.h"
-#import "NormalConstants.h"
+#import "HTAppSettings.h"
+#import "HTNotificationManagement.h"
+
+#import <netdb.h>
+#import <arpa/inet.h>
+//#include <sys/param.h>
+//#include <sys/mount.h>
+//#import "NormalTools.h"
+//#import "NormalConstants.h"
 
 
 @interface UploadOperation ()<NSStreamDelegate>
@@ -47,7 +54,7 @@
 - (void)main{
     @autoreleasepool{
         NSString *IPString = [_serverDict objectForKey:@"ServerIP"];
-        NSString *isSupportIPv6 = [[NormalTools shareInstance]getAppSetting:@"isSupportIPv6"];
+        NSString *isSupportIPv6 = [[HTAppSettings sharedManager]getAppSetting:@"isSupportIPv6"];
         if ([@"true" isEqualToString:isSupportIPv6]) {
             IPString = [self getIPWithHostName:IPString];
         }

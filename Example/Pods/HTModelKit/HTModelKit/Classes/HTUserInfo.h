@@ -95,5 +95,11 @@
  */
 +(void) writeByarchive;
 
+/**
+ * 删档
+ */
++(bool)removeFile;
+
+
 @end
 

@@ -10,9 +10,12 @@
 #endif
 #endif
 
+#import "HTAppSettings.h"
+#import "HTCommonURL.h"
 #import "HTFileServerInfo.h"
 #import "HTKeyValueModel.h"
 #import "HTNetWorkConfig.h"
+#import "HTNotificationManagement.h"
 #import "HTUserInfo.h"
 
 FOUNDATION_EXPORT double HTModelKitVersionNumber;

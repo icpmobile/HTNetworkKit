@@ -14,7 +14,8 @@
  ******************************************************************************/
 
 #import "WebService.h"
-#import "NormalTools.h"
+//#import "NormalTools.h"
+#import "HTAppSettings.h"
 #import "NormalDatabase.h"
 #import "SoapXmlParseHelper.h"
 //#import "WriteFile.h"
@@ -45,18 +46,20 @@
  */
 - (NSMutableURLRequest *)getRequest:(NSString *)urlPath withMethodName:(NSString *)methodName withNoun:(NSDictionary *)diction{
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithDictionary:diction];
-    [dic setValue:[[NormalTools shareInstance]getAppSetting:@"CompanyID"] forKey:@"CompanyID"];
-    [dic setValue:[[NormalTools shareInstance]getAppSetting:@"TimeZone"] forKey:@"TimeZone"];
-    [dic setValue:[[NormalTools shareInstance]getAppSetting:@"LoginID"] forKey:@"LoginID"];
-    [dic setValue:[[NormalTools shareInstance]getAppSetting:@"Connect"] forKey:@"Connect"];
-    [dic setValue:[[NormalTools shareInstance]getAppSetting:@"UserID"] forKey:@"UserID"];
-    [dic setValue:[[NormalTools shareInstance]getAppSetting:@"GroupID"] forKey:@"UserGroup"];
+    [dic setValue:[[HTAppSettings sharedManager]getAppSetting:@"CompanyID"] forKey:@"CompanyID"];
+    [dic setValue:[[HTAppSettings sharedManager]getAppSetting:@"TimeZone"] forKey:@"TimeZone"];
+    [dic setValue:[[HTAppSettings sharedManager]getAppSetting:@"LoginID"] forKey:@"LoginID"];
+    [dic setValue:[[HTAppSettings sharedManager]getAppSetting:@"Connect"] forKey:@"Connect"];
+    [dic setValue:[[HTAppSettings sharedManager]getAppSetting:@"UserID"] forKey:@"UserID"];
+    [dic setValue:[[HTAppSettings sharedManager]getAppSetting:@"GroupID"] forKey:@"UserGroup"];
     [dic setValue:[[IPToolManager sharedManager] currentIpAddress] forKey:@"LoginIP"];
     [dic setValue:@"Mobile" forKey:@"LoginDeviceType"];
     [dic setValue:@"zhs" forKey:@"Lang"];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
     NSString *string = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
-    if (![[NormalTools shareInstance] isNetworkEnable]) {
+    NSString *networkStatus = [[HTAppSettings sharedManager] getAppSetting:NETWORK_STATUS];
+    
+    if ([@"error" isEqualToString:networkStatus]) {
         // MBProgressHUD
         [self failureNetwork];
 //        [JDStatusBarNotification showWithStatus:@"网络连接不可用！" dismissAfter:3.0 styleName:JDStatusBarStyleError];
@@ -139,13 +142,15 @@
 //    NSString *string = [[[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding] stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
 
     NSString *string = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *networkStatus = [[HTAppSettings sharedManager] getAppSetting:NETWORK_STATUS];
     
-    if (![[NormalTools shareInstance] isNetworkEnable]) {
+    if ([@"error" isEqualToString:networkStatus]) {
         // MBProgressHUD
         [self failureNetwork];
-//        [JDStatusBarNotification showWithStatus:@"网络连接不可用！" dismissAfter:3.0 styleName:JDStatusBarStyleError];
+        //        [JDStatusBarNotification showWithStatus:@"网络连接不可用！" dismissAfter:3.0 styleName:JDStatusBarStyleError];
         return nil;
     }
+   
     //发送webservice请求必要格式UserCode   PassWord  UserName
     NSString *soapMessage = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
                            "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"

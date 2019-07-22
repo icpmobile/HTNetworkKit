@@ -88,6 +88,25 @@
 
 
 
++(bool)removeFile
+{
+    NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    
+    NSString *filePath = [documentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@",@"UserInfoConfig"]];
+    NSFileManager *fileMgr = [NSFileManager defaultManager];
+    NSError *err;
+    [fileMgr createDirectoryAtPath:documentPath withIntermediateDirectories:YES attributes:nil error:&err];
+    BOOL bRet = [fileMgr fileExistsAtPath:filePath];
+    if (bRet) {
+        if ([fileMgr removeItemAtPath:filePath error:&err]) {
+            return YES;
+        }else{
+            return NO;
+        }
+    }else{
+        return YES;
+    }
+}
 
 
 

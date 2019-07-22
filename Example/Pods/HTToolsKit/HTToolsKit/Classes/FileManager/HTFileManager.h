@@ -34,4 +34,11 @@
 //删除归档文件
 +(bool)removeByarchiveFile:(NSString *)fileName;
 
+////删除临时文件
+- (void)removeTemporaryStore;
+////删除所有文件
+- (void)removeAllStore;
+///根据文件大小删除数据库以及存在的已下载文件
+- (BOOL)deleteDatabase:(double)downLoadSize;
+
 @end

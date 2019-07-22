@@ -15,8 +15,15 @@
 
 #import "DownLoadOperation.h"
 #import "NormalDatabase.h"
-#import "NormalTools.h"
-#import "NormalConstants.h"
+#import "HTAppSettings.h"
+#import "HTNotificationManagement.h"
+#import "HTFileManager.h"
+#import "MPStorageHelper.h"
+
+#import <arpa/inet.h>
+#import <netdb.h>
+
+//#import "NormalConstants.h"
 
 @implementation DownLoadOperation
 
@@ -41,7 +48,7 @@
         filePath1 = [filePath stringByAppendingPathComponent:[fileDictionary objectForKey:@"FileName"]];
         fileData = [[NSMutableData alloc]init];
         NSString *IPString = [fileDictionary objectForKey:@"ServerIP"];
-        NSString *isSupportIPv6 = [[NormalTools shareInstance]getAppSetting:@"isSupportIPv6"];
+        NSString *isSupportIPv6 = [[HTAppSettings sharedManager] getAppSetting:@"isSupportIPv6"];
         if ([@"true" isEqualToString:isSupportIPv6]) {
             IPString = [self getIPWithHostName:IPString];
         }
@@ -135,14 +142,14 @@
 - (void)acceptServerData{
     if ([[messageDictionary objectForKey:@"Success"]isEqualToString:@"true"]){
         ///手机内存剩余大小
-        double freeSpace = [[NormalTools shareInstance]getPhoneFreeSpace];
+        double freeSpace = [[MPStorageHelper shareInstance] getPhoneFreeStorageSpace];
         ///设置中的手机内存预警值
-        double warnSize = [[[NormalTools shareInstance]getAppSetting:@"CacheWarnSize"]doubleValue];
+        double warnSize = [[[HTAppSettings sharedManager]getAppSetting:@"CacheWarnSize"]doubleValue];
         double fileSize = [[messageDictionary objectForKey:@"DataLength"] doubleValue]/1024.0/1024.0;
         if ((freeSpace - fileSize) < warnSize){
             BOOL isOK = [[NormalDatabase shareInstance]openDB];
             if (isOK) {
-                BOOL isEnough = [[NormalTools shareInstance]deleteDatabase:fileSize];
+                BOOL isEnough = [[HTFileManager sharedManager]deleteDatabase:fileSize];
                 if (!isEnough){
                     [self showWarn:@"NODownLoad"];
                 }

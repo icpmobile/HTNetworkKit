@@ -17,9 +17,12 @@
 #import "FileDataEncrypt.h"
 #import "MBProgressHUD.h"
 #import "NormalDatabase.h"
-#import "NormalTools.h"
+#import "HTAppSettings.h"
+#import "HTNotificationManagement.h"
+
+#import "HTCommonURL.h"
 #import "DownLoadOperation.h"
-#import "NormalConstants.h"
+// #import "NormalConstants.h"
 
 
 @implementation DownloadFileOperations
@@ -40,11 +43,11 @@
  */
 - (void)createFile:(NSDictionary *)message{
     if ([message[@"DirName"] isKindOfClass:[NSNull class]] || [@"" isEqualToString:message[@"DirName"]]){
-        [[NormalTools shareInstance]sendNotification:[NSNumber numberWithInteger:NotificationNOFile]];
+        [[HTNotificationManagement sharedManager] sendNotification:[NSNumber numberWithInteger:NotificationNOFile]];
         return;
     }
     if ([@"false" isEqualToString:message[@"BrowseType"]]){
-        [[NormalTools shareInstance]sendNotification:[NSNumber numberWithInteger:NotificationFileNODownLoad]];
+        [[HTNotificationManagement sharedManager] sendNotification:[NSNumber numberWithInteger:NotificationFileNODownLoad]];
         return;
     }
     fileSize = 0;
@@ -67,7 +70,8 @@
 
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     NSString *plistPath = [paths firstObject];
-    NSString *localPath = [plistPath stringByAppendingPathComponent:@"InforMobileCaches"];
+    // 通过缓存名称获取数据
+    NSString *localPath = [plistPath stringByAppendingPathComponent:FILE_DOWNLOAD_CACHES];
 
     ///文件夹路径
     firstName = [message objectForKey:@"DirName"];
@@ -78,7 +82,12 @@
     NSString *begin = [localpath stringByAppendingPathComponent:@"begin.chcek"];
     NSString *end = [localpath stringByAppendingPathComponent:@"end.chcek"];
     ///是否有网络的标示
-    BOOL isNetWork = [[NormalTools shareInstance]isNetworkEnable];
+    NSString *networkStatus = [[HTAppSettings sharedManager] getAppSetting:NETWORK_STATUS];
+    BOOL isNetWork = NO;
+    if ([@"success" isEqualToString:networkStatus]) {
+        isNetWork = YES;
+    }
+//    BOOL isNetWork = [[NormalTools shareInstance]isNetworkEnable];
     NSFileManager *fileinfo = [NSFileManager defaultManager];
     ///判断文件夹是否存在，若不存在则创建
     if (![fileinfo fileExistsAtPath:localpath]){
@@ -98,7 +107,7 @@
             [jsonText writeToFile:begin atomically:YES encoding:NSUTF8StringEncoding error:nil];
             [self getMessage:[message objectForKey:@"FileList"]];
         }else{
-            [[NormalTools shareInstance]sendNotification:[NSNumber numberWithInteger:NotificationNoNet]];
+            [[HTNotificationManagement sharedManager]sendNotification:[NSNumber numberWithInteger:NotificationNoNet]];
         }
     }
 }
@@ -165,7 +174,8 @@
     NSFileManager *fileinfo = [NSFileManager defaultManager];
     [fileinfo removeItemAtPath:localPath error:nil];
     [fileinfo createDirectoryAtPath:localPath withIntermediateDirectories:YES attributes:Nil error:Nil];
-    NSString *filePath = [plistPath stringByAppendingPathComponent:@"InforMobileCaches"];
+    
+    NSString *filePath = [plistPath stringByAppendingPathComponent:FILE_DOWNLOAD_CACHES];
     filePath = [filePath stringByAppendingPathComponent:firstName];
     NSData *data = [[NSData alloc]initWithContentsOfFile:[filePath stringByAppendingPathComponent:@"end.chcek"]];
     NSArray *fileArr = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
